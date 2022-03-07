@@ -44,7 +44,7 @@ namespace ArenaBlog.Controllers
 
         // POST api/values
         [HttpPost]
-        public async Task<ActionResult<BlogPost>> PostBlogPosts(BlogPost model)
+        public async Task<ActionResult<BlogPost>> PostBlogPost(BlogPost model)
         {
             _context.BlogPosts.Add(model);
             await _context.SaveChangesAsync();
@@ -53,7 +53,7 @@ namespace ArenaBlog.Controllers
         }
         // PUT api/values/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBlogPosts(int id, BlogPost model)
+        public async Task<IActionResult> PutBlogPost(int id, BlogPost model)
         {
             if (id != model.BlogPostId)
             {
@@ -83,7 +83,7 @@ namespace ArenaBlog.Controllers
 
         // DELETE api/values/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<BlogPost>> DeleteProducts(int id)
+        public async Task<ActionResult<BlogPost>> DeleteBlogPost(int id)
         {
             var blogs = await _context.BlogPosts.FindAsync(id);
             if (blogs == null)
@@ -95,6 +95,19 @@ namespace ArenaBlog.Controllers
             await _context.SaveChangesAsync();
 
             return blogs;
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<BlogPost>>> GetProducts(string[] Tags)
+        {
+            var blogs = _context.BlogPosts.AsQueryable();
+
+            if (Tags != null) // check availability 
+            {
+                blogs = _context.BlogPosts.Where(i => i.Tags == Tags);
+            }
+
+            return await blogs.ToListAsync();
         }
 
         private bool BlogPostExists(int id)
